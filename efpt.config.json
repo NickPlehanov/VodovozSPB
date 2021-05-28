@@ -1,6 +1,6 @@
 ﻿{
    "CodeGenerationMode": 0,
-   "ContextClassName": "LocaldbMssqllocaldbContext",
+   "ContextClassName": "VodovozContext",
    "ContextNamespace": null,
    "DefaultDacpacSchema": null,
    "FilterSchemas": false,
@@ -27,11 +27,11 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "VodovozDB.mdf",
+   "UiHint": "SQL-SERVICE.Vodovoz",
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
    "UseDbContextSplitting": false,
-   "UseFluentApiOnly": true,
+   "UseFluentApiOnly": false,
    "UseHandleBars": false,
    "UseInflector": false,
    "UseLegacyPluralizer": false,
