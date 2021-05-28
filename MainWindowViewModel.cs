@@ -416,6 +416,7 @@ namespace VodovozSPB {
                     }
                 }
 
+
                 var result = await context.SaveChangesAsync();
                 if (result.Equals(1)) {
                     notificationManager.Show(new NotificationContent {
