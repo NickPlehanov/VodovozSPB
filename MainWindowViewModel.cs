@@ -249,10 +249,7 @@ namespace VodovozSPB {
         private ObservableCollection<Orders> _OrdersList;
         public ObservableCollection<Orders> OrdersList {
             get => _OrdersList;
-            set {
-                _OrdersList = value;
-                OnPropertyChanged(nameof(OrdersList));
-            }
+            set { _OrdersList = value; OnPropertyChanged(nameof(OrdersList)); }
         }
         /// <summary>
         /// Отображает в окне програмы область для добавления/редактирования сотрудника
