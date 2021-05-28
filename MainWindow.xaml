@@ -5,54 +5,144 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:VodovozSPB"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Водовоз" Height="450" Width="800">
     <mah:MetroWindow.DataContext>
         <local:MainWindowViewModel/>
     </mah:MetroWindow.DataContext>
-    <mah:MetroAnimatedTabControl>
-        <mah:MetroTabItem Header="Сотрудники">
-            <DataGrid ItemsSource="{Binding EmployeesList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" CanUserReorderColumns="True" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGridTextColumn Header="Имя" Binding="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGridTextColumn Header="Отчёство" Binding="{Binding MiddleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGridTemplateColumn Header="Дата рождения">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <DatePicker SelectedDate="{Binding BirthDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Пол" Binding="{Binding Gender, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGridTextColumn Header="Подразделение" Binding="{Binding Department, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </mah:MetroTabItem>
-        <mah:MetroTabItem Header="Отделы">
-            <DataGrid ItemsSource="{Binding DepartmentsList, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Наименование" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                    <DataGridTextColumn Header="Руководитель" Binding="{Binding BossId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </mah:MetroTabItem>
-        <mah:MetroTabItem Header="Заказы">
-            <DataGrid ItemsSource="{Binding OrdersList}" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="№ заказа" Binding="{Binding Id}"/>
-                    <DataGridTextColumn Header="Контрагент" Binding="{Binding Partner}"/>
-                    <DataGridTemplateColumn Header="Дата заказа" >
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <DatePicker SelectedDate="{Binding DateOrder}"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn Header="Владелец" Binding="{Binding OwnerId}"/>
-                </DataGrid.Columns>
-            </DataGrid>
-        </mah:MetroTabItem>
-    </mah:MetroAnimatedTabControl>
+    <Grid>
+        <mah:Flyout Position="Bottom" Panel.ZIndex="2" IsOpen="{Binding IsOpenFlyoutEmployee}" IsModal="True">
+            <Grid Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Content="Фамилия"/>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding EmployeeLastName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="0" Grid.Row="1" Content="Имя"/>
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding EmployeeFirstName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="0" Grid.Row="2" Content="Отчество"/>
+                <TextBox Grid.Column="1" Grid.Row="2" Text="{Binding EmployeeMiddleName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="0" Grid.Row="3" Content="Дата рождения"/>
+                <DatePicker Grid.Column="1" Grid.Row="3" SelectedDate="{Binding EmployeeBirthday,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="0" Grid.Row="4" Content="Пол"/>
+                <ComboBox Grid.Column="1" Grid.Row="4" ItemsSource="{Binding GendersEnum,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding SelectedGender}"/>
+                <Label Grid.Column="0" Grid.Row="5" Content="Подразделение"/>
+                <ComboBox Grid.Column="1" Grid.Row="5" ItemsSource="{Binding DepartmentsList,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedDepartment}"/>
+                <Button Grid.ColumnSpan="2" Grid.Row="6" Margin="5" Command="{Binding AddNewEmployeeCommand}" Content="Сохранить"/>
+            </Grid>
+        </mah:Flyout>
+        <mah:Flyout Position="Bottom" Panel.ZIndex="2" IsOpen="{Binding IsOpenFlyoutDepartment}" IsModal="True" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Content="Наименование"/>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding DepartmentName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="0" Grid.Row="1" Content="Руководитель"/>
+                <ComboBox Grid.Column="1" Grid.Row="1" ItemsSource="{Binding EmployeesList,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="LastName" SelectedItem="{Binding SelectedEmployee}"/>
+                <Button Grid.ColumnSpan="2" Grid.Row="2" Margin="5" Command="{Binding AddEditNewDepartmentCommand}" Content="Сохранить"/>
+            </Grid>
+        </mah:Flyout>
+        <mah:Flyout Position="Bottom" Panel.ZIndex="2" IsOpen="{Binding IsOpenFlyoutOrder}" IsModal="True" Margin="5">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" Content="Контрагент"/>
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding PartnerName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="0" Grid.Row="1" Content="Дата заказа"/>
+                <DatePicker Grid.Column="1" Grid.Row="1" SelectedDate="{Binding OrderDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Label Grid.Column="0" Grid.Row="2" Content="Автор"/>
+                <ComboBox Grid.Column="1" Grid.Row="2" ItemsSource="{Binding EmployeesList,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="LastName" SelectedItem="{Binding SelectedEmployee}"/>
+                <Button Grid.ColumnSpan="2" Grid.Row="3" Margin="5" Command="{Binding AddEditOrderCommand}" Content="Сохранить"/>
+            </Grid>
+        </mah:Flyout>
+        <mah:MetroAnimatedTabControl>
+            <mah:MetroTabItem Header="Сотрудники">
+                <DataGrid ItemsSource="{Binding EmployeesList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedEmployeeByList}" CanUserReorderColumns="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Добавить" Command="{Binding ShowFlyoutEmployee}" CommandParameter="Add"/>
+                            <MenuItem Header="Редактировать" Command="{Binding ShowFlyoutEmployee}" CommandParameter="Edit"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="*" Header="Фамилия" Binding="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="*" Header="Имя" Binding="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="*" Header="Отчёство" Binding="{Binding MiddleName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTemplateColumn Width="*" Header="Дата рождения">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding BirthDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Width="0.5*" Header="Пол" Binding="{Binding GenderShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="*" Header="Подразделение" Binding="{Binding Department.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </mah:MetroTabItem>
+            <mah:MetroTabItem Header="Отделы">
+                <DataGrid ItemsSource="{Binding DepartmentsList, Mode=TwoWay,NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SelectedDepartmentByList}" AutoGenerateColumns="False" CanUserReorderColumns="True" CanUserAddRows="False" CanUserDeleteRows="False" >
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Добавить" Command="{Binding ShowFlyoutDepartment}" CommandParameter="Add"/>
+                            <MenuItem Header="Редактировать" Command="{Binding ShowFlyoutDepartment}" CommandParameter="Edit"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="*" Header="Наименование" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <DataGridTextColumn Width="*" Header="Руководитель" Binding="{Binding Boss.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </mah:MetroTabItem>
+            <mah:MetroTabItem Header="Заказы">
+                <DataGrid ItemsSource="{Binding OrdersList}" SelectedItem="{Binding SelectedOrderByList}" CanUserReorderColumns="True" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Добавить" Command="{Binding ShowFlyoutOrder}" CommandParameter="Add"/>
+                            <MenuItem Header="Редактировать" Command="{Binding ShowFlyoutOrder}" CommandParameter="Edit"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="*" Header="№ заказа" Binding="{Binding Id}"/>
+                        <DataGridTextColumn Width="*" Header="Контрагент" Binding="{Binding Partner}"/>
+                        <DataGridTemplateColumn Width="*" Header="Дата заказа" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DatePicker SelectedDate="{Binding DateOrder}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Width="*" Header="Владелец" Binding="{Binding Owner.LastName}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </mah:MetroTabItem>
+        </mah:MetroAnimatedTabControl>
+    </Grid>
 </mah:MetroWindow>
